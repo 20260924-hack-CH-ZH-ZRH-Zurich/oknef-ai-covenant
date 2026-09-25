@@ -1,0 +1,19 @@
+services:
+  covenant:
+    build: .
+    image: oknef-ai-covenant:${IMAGE_TAG:-dev}
+    env_file: .env
+    restart: unless-stopped
+    ports: ["127.0.0.1:${PORT:-8084}:8084"]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8084/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    deploy:
+      resources:
+        limits: { cpus: "1", memory: 1G }
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
